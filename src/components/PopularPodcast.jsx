@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "./commoncomponents/Container";
 import Button from "./commoncomponents/Button";
 import { motion, LayoutGroup } from "framer-motion";
@@ -23,10 +23,22 @@ const PopularPodcast = () => {
   const filteredPodcasts =
     active === "All" ? podcasts : podcasts.filter((p) => p.category === active);
 
+  // 🔥 Auto Slide Effect (mobile only)
+  useEffect(() => {
+    if (window.innerWidth >= 768) return; // desktop এ auto slide না
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % filteredPodcasts.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [filteredPodcasts]);
+
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
         <div className="py-10">
+
           {/* header */}
           <div className="flex flex-col justify-center text-center w-full md:w-[386px] mx-auto py-10 gap-6">
             <h1 className="font-[Commissioner] text-[32px] md:text-[48px] leading-[48px] md:leading-[70px] font-semibold text-[#13132C]">
@@ -40,10 +52,7 @@ const PopularPodcast = () => {
 
           {/* Category Buttons */}
           <LayoutGroup>
-            <motion.div
-              className="flex justify-center gap-3 md:gap-4 flex-wrap px-3"
-              layout
-            >
+            <motion.div className="flex justify-center gap-3 md:gap-4 flex-wrap px-3" layout>
               {categories.map((item) => (
                 <motion.button
                   key={item}
@@ -138,9 +147,6 @@ const PopularPodcast = () => {
               text="More Podcast"
               bgColor="transparent"
               textColor="#FFFFFF"
-              font="Commissioner"
-              fontSize="16px"
-              fontWeight={400}
               border="1px solid #7678ED"
             />
           </div>

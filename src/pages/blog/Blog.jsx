@@ -27,15 +27,27 @@ const Blog = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const CARD_WIDTH = 327;
-  const GAP = 16; // gap-4
+  const GAP = 16;
   const TOTAL = CARD_WIDTH + GAP;
 
+  // Detect mobile
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
+
+  // 🔥 Auto Slide Effect
+  useEffect(() => {
+    if (!isMobile) return; // only mobile slider auto-runs
+
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % blogData.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isMobile]);
 
   return (
     <Container>
@@ -55,7 +67,7 @@ const Blog = () => {
           <motion.div
             className="flex gap-4"
             animate={{ x: -activeIndex * TOTAL }}
-            transition={{ type: "spring", stiffness: 260, damping: 30 }}
+            transition={{ type: "spring", stiffness: 240, damping: 28 }}
           >
             {blogData.map((blog, index) => (
               <div
